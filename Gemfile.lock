@@ -1,8 +1,24 @@
+GIT
+  remote: https://github.com/crmne/ruby_llm.git
+  revision: 1e315ab4b3f3a150c443dc9a17f504756c2aad6f
+  branch: main
+  specs:
+    ruby_llm (1.1.2)
+      base64
+      event_stream_parser (~> 1)
+      faraday (~> 2)
+      faraday-multipart (~> 1)
+      faraday-net_http (~> 3)
+      faraday-retry (~> 2)
+      zeitwerk (~> 2)
+
 PATH
   remote: .
   specs:
     blazer-ai (0.1.0)
-      rails (>= 8.0.2)
+      blazer (>= 3.0)
+      rails (>= 7.1)
+      ruby_llm (>= 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -144,7 +160,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
-    nio4r (2.7.4)
+    nio4r (2.7.5)
     nokogiri (1.18.7-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.7-aarch64-linux-musl)
@@ -177,7 +193,7 @@ GEM
     psych (5.2.3)
       date
       stringio
-    puma (6.6.0)
+    puma (7.1.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.13)
@@ -253,14 +269,6 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
-    ruby_llm (1.1.2)
-      base64
-      event_stream_parser (~> 1)
-      faraday (~> 2)
-      faraday-multipart (~> 1)
-      faraday-net_http (~> 3)
-      faraday-retry (~> 2)
-      zeitwerk (~> 2)
     safely_block (0.4.1)
     securerandom (0.4.1)
     sqlite3 (2.6.0-aarch64-linux-gnu)
@@ -303,7 +311,7 @@ DEPENDENCIES
   propshaft
   puma
   rubocop-rails-omakase
-  ruby_llm
+  ruby_llm!
   sqlite3
 
 BUNDLED WITH
