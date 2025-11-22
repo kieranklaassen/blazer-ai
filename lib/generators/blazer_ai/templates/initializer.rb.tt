@@ -1,0 +1,42 @@
+# Blazer AI Configuration
+# Generated with: rails generate blazer_ai:install --provider=<%= @provider %>
+# See https://github.com/kieranklaassen/blazer-ai for more info
+
+# Configure RubyLLM (the underlying LLM library)
+RubyLLM.configure do |config|
+<%- case @provider -%>
+<%- when "openai" -%>
+  config.openai_api_key = ENV.fetch("<%= @env_var %>", nil)
+<%- when "anthropic" -%>
+  config.anthropic_api_key = ENV.fetch("<%= @env_var %>", nil)
+<%- when "google" -%>
+  config.gemini_api_key = ENV.fetch("<%= @env_var %>", nil)
+<%- end -%>
+end
+
+# Configure Blazer AI
+Blazer::Ai.configure do |config|
+  # Enable/disable AI features
+  config.enabled = true
+
+  # LLM model to use for SQL generation
+  # Default: <%= @model %>
+  config.default_model = "<%= @model %>"
+
+  # Temperature for LLM responses (0.0 = deterministic, 1.0 = creative)
+  # Lower values recommended for SQL generation
+  config.temperature = 0.2
+
+  # Rate limiting: requests per minute per user/IP
+  config.rate_limit_per_minute = 20
+
+  # Schema cache TTL (how long to cache database schema)
+  config.schema_cache_ttl = 12.hours
+
+  # Maximum input lengths for safety
+  config.max_prompt_length = 2000
+  config.max_sql_length = 10_000
+
+  # Blazer mount path (update if you mounted Blazer at a different path)
+  # config.blazer_mount_path = "/blazer"
+end
