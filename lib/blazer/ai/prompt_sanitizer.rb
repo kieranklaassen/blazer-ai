@@ -13,7 +13,7 @@ module Blazer
         /\bDELETE\b/i,
         /\bTRUNCATE\b/i,
         /<script/i,
-        /javascript:/i,
+        /javascript:/i
       ].freeze
 
       def initialize(max_length: nil)

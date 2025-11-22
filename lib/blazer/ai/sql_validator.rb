@@ -36,7 +36,7 @@ module Blazer
         /DBMS_/i,                    # Oracle packages
         /XP_CMDSHELL/i,              # SQL Server command execution
         /SP_CONFIGURE/i,             # SQL Server configuration
-        /0x[0-9A-Fa-f]{8,}/i,        # Long hex strings (potential encoding attacks)
+        /0x[0-9A-Fa-f]{8,}/i        # Long hex strings (potential encoding attacks)
       ].freeze
 
       def validate!(sql)
