@@ -1,7 +1,7 @@
 module Blazer
   module Ai
     class QueriesController < ApplicationController
-      before_action :ensure_ai_enabled, only: [:create]
+      before_action :ensure_ai_enabled, only: [ :create ]
 
       # POST /blazer/ai/queries (generate SQL)
       def create
@@ -74,4 +74,3 @@ module Blazer
     end
   end
 end
-
