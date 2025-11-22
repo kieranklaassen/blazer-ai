@@ -1,0 +1,27 @@
+<%= form_for @query, url: @run_query ? run_queries_path : queries_path, method: @run_query ? :post : :put, html: {class: "form-horizontal"} do |f| %>
+  <div class="form-group">
+    <div class="col-sm-8">
+      <%= f.text_field :name, class: "form-control", placeholder: "Name" %>
+    </div>
+    <div class="col-sm-4">
+      <%= f.select :data_source, Blazer.data_sources.values.map { |ds| [ds.name, ds.id] }, {}, class: ("hide" if Blazer.data_sources.size == 1), style: "width: 140px;" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
+      <%= f.text_area :description, class: "form-control", placeholder: "Description", rows: 2 %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
+      <%= f.text_area :statement, class: "form-control", placeholder: "SQL", rows: 10, autofocus: true %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-12">
+      <%= f.submit "Run", class: "btn btn-primary" %>
+      <%= render "blazer/ai/queries/generate_sql_button" %>
+      <%= link_to "Cancel", queries_path, class: "btn btn-default" %>
+    </div>
+  </div>
+<% end %>

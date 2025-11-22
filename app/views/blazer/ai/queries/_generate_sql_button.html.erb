@@ -1,0 +1,210 @@
+<style>
+  #blazer-ai-container {
+    display: inline-block;
+    position: relative;
+  }
+  #generate-sql {
+    transition: all 0.2s ease;
+  }
+  #generate-sql.loading {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  #generate-sql .spinner {
+    display: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  #generate-sql.loading .spinner {
+    display: inline-block;
+  }
+  #generate-sql.loading .btn-text {
+    opacity: 0.8;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  #blazer-ai-error {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    color: #721c24;
+    font-size: 13px;
+  }
+  #blazer-ai-error.show {
+    display: block;
+  }
+  #blazer-ai-error .close-btn {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+    opacity: 0.6;
+  }
+  #blazer-ai-error .close-btn:hover {
+    opacity: 1;
+  }
+</style>
+
+<span id="blazer-ai-container">
+  <button type="button"
+          id="generate-sql"
+          class="btn btn-success">
+    <span class="spinner"></span>
+    <span class="btn-text">Generate SQL (AI)</span>
+  </button>
+  <div id="blazer-ai-error">
+    <span class="close-btn" onclick="BlazerAI.hideError()">&times;</span>
+    <span class="error-message"></span>
+  </div>
+</span>
+
+<script>
+(function() {
+  window.BlazerAI = {
+    isLoading: false,
+
+    init: function() {
+      var btn = document.getElementById('generate-sql');
+      if (btn) {
+        btn.addEventListener('click', this.handleGenerate.bind(this));
+      }
+
+      // Keyboard shortcut: Ctrl/Cmd + Shift + G
+      document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'G') {
+          e.preventDefault();
+          BlazerAI.handleGenerate();
+        }
+      });
+    },
+
+    handleGenerate: function(event) {
+      if (event) event.preventDefault();
+      if (this.isLoading) return;
+
+      var name = document.querySelector('input[name="query[name]"]');
+      var description = document.querySelector('textarea[name="query[description]"]');
+
+      var nameValue = name ? name.value.trim() : '';
+      var descValue = description ? description.value.trim() : '';
+
+      if (!nameValue && !descValue) {
+        this.showError('Please enter a query name or description to generate SQL.');
+        return;
+      }
+
+      this.hideError();
+      this.setLoading(true);
+
+      var dataSourceSelect = document.querySelector('select[name="query[data_source]"]');
+      var dataSource = dataSourceSelect ? dataSourceSelect.value : '';
+
+      var generateSqlUrl = <%= raw Blazer::Ai.configuration.generate_sql_path.to_json %>;
+
+      fetch(generateSqlUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          query: {
+            name: nameValue,
+            description: descValue,
+            data_source: dataSource
+          }
+        })
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return { status: response.status, data: data };
+        });
+      })
+      .then(function(result) {
+        BlazerAI.setLoading(false);
+
+        if (result.status === 429) {
+          var retryAfter = result.data.retry_after || 60;
+          BlazerAI.showError('Rate limit exceeded. Please wait ' + retryAfter + ' seconds before trying again.');
+          return;
+        }
+
+        if (result.status !== 200 || result.data.error) {
+          BlazerAI.showError(result.data.error || 'Failed to generate SQL. Please try again.');
+          return;
+        }
+
+        if (result.data.sql) {
+          BlazerAI.insertSql(result.data.sql);
+        }
+      })
+      .catch(function(error) {
+        BlazerAI.setLoading(false);
+        console.error('[BlazerAI] Error:', error);
+        BlazerAI.showError('Network error. Please check your connection and try again.');
+      });
+    },
+
+    insertSql: function(sql) {
+      if (window.editor) {
+        window.editor.setValue(sql, 1);
+        window.editor.focus();
+      } else {
+        var textarea = document.querySelector('textarea[name="query[statement]"]');
+        if (textarea) {
+          textarea.value = sql;
+          textarea.focus();
+        }
+      }
+    },
+
+    setLoading: function(loading) {
+      this.isLoading = loading;
+      var btn = document.getElementById('generate-sql');
+      if (btn) {
+        if (loading) {
+          btn.classList.add('loading');
+          btn.disabled = true;
+        } else {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+        }
+      }
+    },
+
+    showError: function(message) {
+      var errorDiv = document.getElementById('blazer-ai-error');
+      var errorMsg = errorDiv ? errorDiv.querySelector('.error-message') : null;
+      if (errorDiv && errorMsg) {
+        errorMsg.textContent = message;
+        errorDiv.classList.add('show');
+      }
+    },
+
+    hideError: function() {
+      var errorDiv = document.getElementById('blazer-ai-error');
+      if (errorDiv) {
+        errorDiv.classList.remove('show');
+      }
+    }
+  };
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      BlazerAI.init();
+    });
+  } else {
+    BlazerAI.init();
+  }
+})();
+</script>

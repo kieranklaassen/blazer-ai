@@ -1,0 +1,4 @@
+data_sources:
+  main:
+    adapter: sqlite3
+    database: db/development.sqlite3
