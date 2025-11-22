@@ -108,7 +108,7 @@
       var dataSourceSelect = document.querySelector('select[name="query[data_source]"]');
       var dataSource = dataSourceSelect ? dataSourceSelect.value : '';
 
-      var generateSqlUrl = <%= raw Blazer::Ai.configuration.generate_sql_path.to_json %>;
+      var generateSqlUrl = '<%= Blazer::Ai::UrlHelper.blazer_ai_generate_sql_path %>';
 
       fetch(generateSqlUrl, {
         method: 'POST',

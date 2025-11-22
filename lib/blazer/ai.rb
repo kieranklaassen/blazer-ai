@@ -1,5 +1,6 @@
 require "blazer/ai/version"
 require "blazer/ai/configuration"
+require "blazer/ai/url_helper"
 
 # Load security components
 require "blazer/ai/sql_validator"

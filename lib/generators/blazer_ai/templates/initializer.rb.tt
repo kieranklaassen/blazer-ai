@@ -36,7 +36,4 @@ Blazer::Ai.configure do |config|
   # Maximum input lengths for safety
   config.max_prompt_length = 2000
   config.max_sql_length = 10_000
-
-  # Blazer mount path (update if you mounted Blazer at a different path)
-  # config.blazer_mount_path = "/blazer"
 end
