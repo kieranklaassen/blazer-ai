@@ -36,24 +36,6 @@ module Blazer
         count
       end
 
-      # Legacy method for backwards compatibility - prefer check_and_track!
-      def check!(identifier:)
-        key = rate_limit_key(identifier)
-        count = @cache.read(key).to_i
-
-        if count >= @max_requests
-          raise RateLimitExceeded.new(
-            "Rate limit exceeded. Please wait before generating more queries.",
-            retry_after: @window.to_i
-          )
-        end
-      end
-
-      # Legacy method for backwards compatibility - prefer check_and_track!
-      def track!(identifier:)
-        atomic_increment(rate_limit_key(identifier))
-      end
-
       private
 
       def atomic_increment(key)
