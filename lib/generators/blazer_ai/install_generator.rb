@@ -29,10 +29,9 @@ module BlazerAi
         say "  1. Set your API key:"
         say "     export #{@env_var}=your_api_key_here"
         say ""
-        say "  2. Mount the engine in config/routes.rb (inside your Blazer mount):"
-        say "     mount Blazer::Ai::Engine, at: \"/ai\""
+        say "  2. Restart your Rails server"
         say ""
-        say "  3. Restart your Rails server"
+        say "Routes are automatically added to Blazer. No manual mounting required."
         say ""
       end
 

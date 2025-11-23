@@ -1,99 +1,106 @@
-# blazer-ai
+# Blazer AI
 
-AI-powered SQL generation for [Blazer](https://github.com/ankane/blazer) using [RubyLLM](https://github.com/crmne/ruby_llm).
+AI-powered SQL generation for [Blazer](https://github.com/ankane/blazer).
 
-Transform natural language descriptions into SQL queries with a single click. Supports multiple AI providers including OpenAI, Anthropic Claude, Google Gemini, and local models via Ollama.
+[![Gem Version](https://img.shields.io/gem/v/blazer-ai)](https://rubygems.org/gems/blazer-ai)
+[![Build Status](https://github.com/<user>/blazer-ai/actions/workflows/build.yml/badge.svg)](https://github.com/<user>/blazer-ai/actions)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](MIT-LICENSE)
 
 ## Features
 
-- **Natural Language to SQL** - Describe your query in plain English
-- **Multi-Provider Support** - OpenAI, Anthropic, Gemini, Bedrock, Ollama, and more
-- **Schema-Aware** - Automatically injects your database schema for accurate queries
-- **Safety First** - SQL validation prevents dangerous operations
-- **Rate Limiting** - Built-in protection against API abuse
-- **Multiple Data Sources** - Works with all Blazer data sources
+- Natural language to SQL generation
+- Multi-provider support (OpenAI, Anthropic, Gemini, Bedrock, Ollama)
+- Schema-aware context for accurate queries
+- SQL validation prevents dangerous operations
+- Built-in rate limiting
 
 ## Installation
 
-Add to your Gemfile:
+Add this line to your application's **Gemfile**:
 
 ```ruby
 gem "blazer-ai"
 ```
 
+Run:
+
 ```bash
 bundle install
 ```
 
-If Blazer isn't set up yet:
+## Quick Start
+
+Run the install generator:
 
 ```bash
-bin/rails blazer:install:migrations
-bin/rails db:migrate
+rails generate blazer_ai:install
 ```
+
+Choose a provider:
+
+```bash
+rails generate blazer_ai:install --provider=openai
+```
+
+```bash
+rails generate blazer_ai:install --provider=anthropic
+```
+
+```bash
+rails generate blazer_ai:install --provider=google
+```
+
+The default provider is OpenAI.
 
 ## Configuration
 
-### 1. Configure RubyLLM
+### AI Provider
 
 Create an initializer for your AI provider:
 
 ```ruby
 # config/initializers/ruby_llm.rb
-
 RubyLLM.configure do |c|
-  # OpenAI
   c.openai_api_key = ENV["OPENAI_API_KEY"]
-
-  # Anthropic Claude
-  c.anthropic_api_key = ENV["ANTHROPIC_API_KEY"]
-
-  # Google Gemini
-  c.gemini_api_key = ENV["GEMINI_API_KEY"]
-
-  # AWS Bedrock
-  c.bedrock_api_key = ENV["AWS_ACCESS_KEY_ID"]
-  c.bedrock_secret_key = ENV["AWS_SECRET_ACCESS_KEY"]
-  c.bedrock_region = ENV["AWS_REGION"]
-
-  # Local Ollama
-  c.ollama_api_base = "http://localhost:11434/v1"
 end
 ```
 
-### 2. Configure Blazer AI (optional)
+For Anthropic:
+
+```ruby
+RubyLLM.configure do |c|
+  c.anthropic_api_key = ENV["ANTHROPIC_API_KEY"]
+end
+```
+
+For Google Gemini:
+
+```ruby
+RubyLLM.configure do |c|
+  c.gemini_api_key = ENV["GEMINI_API_KEY"]
+end
+```
+
+### Blazer AI Options
 
 ```ruby
 # config/initializers/blazer_ai.rb
-
 Blazer::Ai.configure do |c|
-  # Enable/disable AI features (default: true)
-  c.enabled = true
-
-  # Default model (default: "o4-mini")
-  c.default_model = "claude-sonnet-4-5-20250929"
-
-  # Temperature for generation (default: 0.2)
-  c.temperature = 0.2
-
-  # Rate limiting (default: 20 requests/minute)
-  c.rate_limit_per_minute = 20
-
-  # Schema cache duration (default: 12 hours)
-  c.schema_cache_ttl = 12.hours
-
-  # Maximum prompt length (default: 2000 characters)
-  c.max_prompt_length = 2000
+  c.enabled = true                    # enable/disable AI features
+  c.default_model = "gpt-4o-mini"     # model to use
+  c.temperature = 0.2                 # generation temperature
+  c.rate_limit_per_minute = 20        # requests per minute
+  c.schema_cache_ttl = 12.hours       # schema cache duration
+  c.max_prompt_length = 2000          # max input length
 end
 ```
 
 ## Usage
 
 1. Visit `/blazer/queries/new`
-2. Enter a query name like "Active Users"
-3. Add a description: "Show all users who logged in within the last 7 days"
-4. Click **Generate SQL (AI)**
-5. Review and run the generated SQL
+2. Enter a description like "Show users who logged in this week"
+3. Click **Generate SQL (AI)**
+4. Review and run the generated SQL
 
 ### Keyboard Shortcut
 
@@ -101,80 +108,30 @@ Press `Ctrl+Shift+G` (or `Cmd+Shift+G` on Mac) to generate SQL.
 
 ## Security
 
-Blazer AI includes multiple security layers:
-
 ### SQL Validation
 
 Generated SQL is validated before display:
+
 - Only `SELECT` and `WITH` statements allowed
-- Blocks `INSERT`, `UPDATE`, `DELETE`, `DROP`, `TRUNCATE`, etc.
+- Blocks `INSERT`, `UPDATE`, `DELETE`, `DROP`, `TRUNCATE`
 - Detects SQL injection patterns
 - Prevents multi-statement queries
 
-### Prompt Sanitization
-
-User input is sanitized to prevent prompt injection:
-- Removes potential injection patterns
-- Truncates overly long inputs
-- Strips dangerous characters
-
-### Rate Limiting
-
-Built-in rate limiting prevents API abuse:
-- Default: 20 requests per minute per user
-- Configurable via `rate_limit_per_minute`
-- Uses Rails cache for distributed limiting
-
 ### Best Practices
 
-1. **Use a read-only database user** for Blazer connections
-2. **Set appropriate row limits** in Blazer config
-3. **Enable audit logging** to track generated queries
-4. **Review generated SQL** before executing
-
-## How It Works
-
-```
-User enters: "Show top 10 products by revenue"
-                              |
-                              v
-+-------------------------------------------------------------+
-|  1. Sanitize input (PromptSanitizer)                        |
-|  2. Build schema context (SchemaCache)                      |
-|  3. Generate SQL via LLM (RubyLLM)                          |
-|  4. Validate output (SqlValidator)                          |
-|  5. Return to editor                                        |
-+-------------------------------------------------------------+
-                              |
-                              v
-+-------------------------------------------------------------+
-|  SELECT p.name, SUM(oi.quantity * oi.price) as revenue      |
-|  FROM products p                                            |
-|  JOIN order_items oi ON p.id = oi.product_id                |
-|  GROUP BY p.id, p.name                                      |
-|  ORDER BY revenue DESC                                      |
-|  LIMIT 10;                                                  |
-+-------------------------------------------------------------+
-```
+- Use a read-only database user for Blazer
+- Set appropriate row limits in Blazer config
+- Review generated SQL before executing
 
 ## API
-
-### Configuration
-
-```ruby
-Blazer::Ai.configuration.enabled          # => true
-Blazer::Ai.configuration.default_model    # => "o4-mini"
-Blazer::Ai.configuration.temperature      # => 0.2
-Blazer::Ai.configuration.rate_limit_per_minute # => 20
-```
 
 ### Schema Cache
 
 ```ruby
-# Invalidate schema cache for a data source
+# invalidate schema cache for a data source
 Blazer::Ai::SchemaCache.invalidate(data_source_id: "main")
 
-# Invalidate all cached schemas
+# invalidate all cached schemas
 Blazer::Ai::SchemaCache.invalidate_all
 ```
 
@@ -183,15 +140,14 @@ Blazer::Ai::SchemaCache.invalidate_all
 ```ruby
 validator = Blazer::Ai::SqlValidator.new
 validator.safe?("SELECT * FROM users")  # => true
-validator.safe?("DROP TABLE users")      # => false
+validator.safe?("DROP TABLE users")     # => false
 ```
 
 ## Development
 
 ```bash
-cd blazer-ai
 bundle install
-bin/rails test
+bundle exec rake test
 ```
 
 Run the dummy app:
@@ -209,10 +165,6 @@ bin/rails server
 - Blazer >= 3.0
 - RubyLLM >= 1.0
 
-## License
-
-MIT License. See [LICENSE](MIT-LICENSE) for details.
-
 ## Contributing
 
 1. Fork it
@@ -220,3 +172,7 @@ MIT License. See [LICENSE](MIT-LICENSE) for details.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## License
+
+MIT
