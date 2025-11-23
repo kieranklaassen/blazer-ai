@@ -17,4 +17,11 @@ class InstallGeneratorTest < Rails::Generators::TestCase
       assert_match(/default_model/, content)
     end
   end
+
+  def test_identical_on_second_run
+    run_generator
+    output = run_generator
+
+    assert_match(/identical/, output)
+  end
 end

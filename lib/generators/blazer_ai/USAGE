@@ -1,0 +1,8 @@
+Description:
+    Creates the Blazer AI initializer for AI-powered SQL generation.
+
+Example:
+    bin/rails generate blazer_ai:install
+
+    This will create:
+        config/initializers/blazer_ai.rb
