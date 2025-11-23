@@ -17,8 +17,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_16_180342) do
     t.integer "query_id"
     t.text "statement"
     t.integer "user_id"
-    t.index ["query_id"], name: "index_blazer_audits_on_query_id"
-    t.index ["user_id"], name: "index_blazer_audits_on_user_id"
+    t.index [ "query_id" ], name: "index_blazer_audits_on_query_id"
+    t.index [ "user_id" ], name: "index_blazer_audits_on_user_id"
   end
 
   create_table "blazer_checks", force: :cascade do |t|
@@ -33,8 +33,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_16_180342) do
     t.text "slack_channels"
     t.string "state"
     t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_blazer_checks_on_creator_id"
-    t.index ["query_id"], name: "index_blazer_checks_on_query_id"
+    t.index [ "creator_id" ], name: "index_blazer_checks_on_creator_id"
+    t.index [ "query_id" ], name: "index_blazer_checks_on_query_id"
   end
 
   create_table "blazer_dashboard_queries", force: :cascade do |t|
@@ -43,8 +43,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_16_180342) do
     t.integer "position"
     t.integer "query_id"
     t.datetime "updated_at", null: false
-    t.index ["dashboard_id"], name: "index_blazer_dashboard_queries_on_dashboard_id"
-    t.index ["query_id"], name: "index_blazer_dashboard_queries_on_query_id"
+    t.index [ "dashboard_id" ], name: "index_blazer_dashboard_queries_on_dashboard_id"
+    t.index [ "query_id" ], name: "index_blazer_dashboard_queries_on_query_id"
   end
 
   create_table "blazer_dashboards", force: :cascade do |t|
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_16_180342) do
     t.integer "creator_id"
     t.string "name"
     t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_blazer_dashboards_on_creator_id"
+    t.index [ "creator_id" ], name: "index_blazer_dashboards_on_creator_id"
   end
 
   create_table "blazer_queries", force: :cascade do |t|
@@ -64,6 +64,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_16_180342) do
     t.text "statement"
     t.string "status"
     t.datetime "updated_at", null: false
-    t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
+    t.index [ "creator_id" ], name: "index_blazer_queries_on_creator_id"
   end
 end

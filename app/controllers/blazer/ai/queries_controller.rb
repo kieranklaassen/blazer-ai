@@ -1,7 +1,7 @@
 # Handles AI-powered SQL generation requests.
 # Validates rate limits, sanitizes input, and returns generated SQL.
 class Blazer::Ai::QueriesController < Blazer::Ai::ApplicationController
-  before_action :ensure_ai_enabled, only: [:create]
+  before_action :ensure_ai_enabled, only: [ :create ]
 
   def create
     rate_limiter.check_and_track!(identifier: current_identifier)

@@ -19,7 +19,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "generates initializer with anthropic provider" do
-    run_generator ["--provider=anthropic"]
+    run_generator [ "--provider=anthropic" ]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
       assert_match(/Provider: anthropic/, content)
@@ -30,7 +30,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "generates initializer with google provider" do
-    run_generator ["--provider=google"]
+    run_generator [ "--provider=google" ]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
       assert_match(/Provider: google/, content)
@@ -41,7 +41,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "falls back to openai for unknown provider" do
-    run_generator ["--provider=unknown"]
+    run_generator [ "--provider=unknown" ]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
       assert_match(/config\.openai_api_key/, content)
