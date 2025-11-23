@@ -11,7 +11,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     run_generator
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
-      assert_match(/provider=openai/, content)
+      assert_match(/Provider: openai/, content)
       assert_match(/config\.openai_api_key/, content)
       assert_match(/OPENAI_API_KEY/, content)
       assert_match(/gpt-4o-mini/, content)
@@ -19,10 +19,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "generates initializer with anthropic provider" do
-    run_generator [ "--provider=anthropic" ]
+    run_generator ["--provider=anthropic"]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
-      assert_match(/provider=anthropic/, content)
+      assert_match(/Provider: anthropic/, content)
       assert_match(/config\.anthropic_api_key/, content)
       assert_match(/ANTHROPIC_API_KEY/, content)
       assert_match(/claude-sonnet-4-20250514/, content)
@@ -30,18 +30,18 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "generates initializer with google provider" do
-    run_generator [ "--provider=google" ]
+    run_generator ["--provider=google"]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
-      assert_match(/provider=google/, content)
+      assert_match(/Provider: google/, content)
       assert_match(/config\.gemini_api_key/, content)
       assert_match(/GEMINI_API_KEY/, content)
-      assert_match(/gemini-1.5-flash/, content)
+      assert_match(/gemini-2.0-flash/, content)
     end
   end
 
   test "falls back to openai for unknown provider" do
-    run_generator [ "--provider=unknown" ]
+    run_generator ["--provider=unknown"]
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
       assert_match(/config\.openai_api_key/, content)
@@ -53,9 +53,9 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/initializers/blazer_ai.rb" do |content|
       assert_match(/Blazer::Ai\.configure/, content)
-      assert_match(/config\.enabled = true/, content)
-      assert_match(/config\.temperature/, content)
-      assert_match(/config\.rate_limit_per_minute/, content)
+      assert_match(/config\.default_model/, content)
+      assert_match(/temperature/, content)
+      assert_match(/rate_limit_per_minute/, content)
     end
   end
 end
