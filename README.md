@@ -3,7 +3,7 @@
 AI-powered SQL generation for [Blazer](https://github.com/ankane/blazer)
 
 [![Gem Version](https://badge.fury.io/rb/blazer-ai.svg)](https://badge.fury.io/rb/blazer-ai)
-[![CI](https://github.com/kieranklaassen/blazer-ai/actions/workflows/build.yml/badge.svg)](https://github.com/kieranklaassen/blazer-ai/actions/workflows/build.yml)
+[![CI](https://github.com/kieranklaassen/blazer-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/kieranklaassen/blazer-ai/actions/workflows/ci.yml)
 
 ## Installation
 
