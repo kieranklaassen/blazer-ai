@@ -1,7 +1,7 @@
 # Handles AI-powered SQL generation requests.
 # Validates rate limits, sanitizes input, and returns generated SQL.
 class Blazer::Ai::QueriesController < Blazer::Ai::ApplicationController
-  before_action :ensure_ai_enabled, only: [ :create ]
+  before_action :ensure_ai_enabled, only: [:create]
 
   def create
     rate_limiter.check_and_track!(identifier: current_identifier)
@@ -12,17 +12,17 @@ class Blazer::Ai::QueriesController < Blazer::Ai::ApplicationController
     sql = generator.call
     log_generation(query_params, sql)
 
-    render json: { sql: sql }
+    render json: {sql: sql}
   rescue SqlValidator::ValidationError
-    render json: { error: "Generated SQL failed safety validation" }, status: :unprocessable_entity
+    render json: {error: "Generated SQL failed safety validation"}, status: :unprocessable_entity
   rescue SqlGenerator::GenerationError => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    render json: {error: e.message}, status: :unprocessable_entity
   rescue RateLimiter::RateLimitExceeded => e
-    render json: { error: e.message, retry_after: e.retry_after }, status: :too_many_requests
-  rescue StandardError => e
+    render json: {error: e.message, retry_after: e.retry_after}, status: :too_many_requests
+  rescue => e
     Rails.logger.error("[BlazerAI] Generation error: #{e.class}: #{e.message}")
     Rails.logger.error(e.backtrace.first(10).join("\n")) if e.backtrace
-    render json: { error: "An error occurred while generating SQL. Please try again." }, status: :unprocessable_entity
+    render json: {error: "An error occurred while generating SQL. Please try again."}, status: :unprocessable_entity
   end
 
   private
@@ -58,7 +58,7 @@ class Blazer::Ai::QueriesController < Blazer::Ai::ApplicationController
   end
 
   def ensure_ai_enabled
-    render json: { error: "AI features are disabled" }, status: :forbidden unless Blazer::Ai.configuration.enabled?
+    render json: {error: "AI features are disabled"}, status: :forbidden unless Blazer::Ai.configuration.enabled?
   end
 
   def rate_limiter

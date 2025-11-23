@@ -8,7 +8,12 @@ module Blazer::Ai::UrlHelper
     path = "/ai/generate_sql"
 
     if defined?(Rails.application)
-      main_route = Rails.application.routes.routes.find { |r| r.name == "blazer" }
+      # Find the route that mounts Blazer::Engine
+      # The route name could be 'blazer', 'admin_blazer', etc.
+      main_route = Rails.application.routes.routes.find do |r|
+        r.app.respond_to?(:app) && r.app.app == Blazer::Engine
+      end
+
       if main_route
         blazer_mount = main_route.path.spec.to_s.gsub("(.:format)", "")
         path = blazer_mount + path

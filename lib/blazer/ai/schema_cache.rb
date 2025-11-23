@@ -37,7 +37,7 @@ module Blazer::Ai
           columns = connection.columns(table_name).map do |col|
             "#{col.name} (#{col.sql_type})"
           end
-          "#{table_name}: #{columns.join(', ')}"
+          "#{table_name}: #{columns.join(", ")}"
         end.join("\n")
       end
     end

@@ -1,11 +1,11 @@
 # Configuration for Blazer AI.
 class Blazer::Ai::Configuration
   attr_accessor :enabled, :default_model, :temperature, :rate_limit_per_minute,
-                :schema_cache_ttl, :max_prompt_length, :max_sql_length
+    :schema_cache_ttl, :max_prompt_length, :max_sql_length
 
   def initialize
     @enabled = true
-    @default_model = "gpt-5.1-codex"
+    @default_model = "gpt-4o-mini"
     @temperature = 0.2
     @rate_limit_per_minute = 20
     @schema_cache_ttl = 12.hours

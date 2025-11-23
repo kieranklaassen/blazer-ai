@@ -73,9 +73,9 @@ module Blazer::Ai
       # Timeout to prevent hung requests if LLM provider is slow/unresponsive
       Timeout.timeout(30, GenerationError, "SQL generation timed out. Please try again.") do
         RubyLLM.chat(model: model)
-               .with_temperature(temperature)
-               .ask(prompt)
-               .content
+          .with_temperature(temperature)
+          .ask(prompt)
+          .content
       end
     end
 
