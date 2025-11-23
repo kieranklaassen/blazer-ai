@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="logo.png" alt="Blazer AI" width="120">
-</p>
-
 # Blazer AI
 
 AI-powered SQL generation for [Blazer](https://github.com/ankane/blazer).
