@@ -5,7 +5,7 @@ class Blazer::Ai::Configuration
 
   def initialize
     @enabled = true
-    @default_model = "gpt-4o-mini"
+    @default_model = "gpt-5.1-codex"
     @temperature = 0.2
     @rate_limit_per_minute = 20
     @schema_cache_ttl = 12.hours

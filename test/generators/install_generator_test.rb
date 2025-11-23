@@ -14,7 +14,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
       assert_match(/Provider: openai/, content)
       assert_match(/config\.openai_api_key/, content)
       assert_match(/OPENAI_API_KEY/, content)
-      assert_match(/gpt-4o-mini/, content)
+      assert_match(/gpt-5.1-codex/, content)
     end
   end
 

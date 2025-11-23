@@ -52,7 +52,7 @@ module BlazerAi
 
       def default_model
         case @provider
-        when "openai" then "gpt-4o-mini"
+        when "openai" then "gpt-5.1-codex"
         when "anthropic" then "claude-sonnet-4-20250514"
         when "google" then "gemini-2.0-flash"
         end

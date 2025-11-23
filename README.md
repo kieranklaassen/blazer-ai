@@ -63,7 +63,7 @@ The generator creates `config/initializers/blazer_ai.rb`:
 
 ```ruby
 Blazer::Ai.configure do |config|
-  config.default_model = "gpt-4o-mini"
+  config.default_model = "gpt-5.1-codex"
   # config.temperature = 0.2
   # config.rate_limit_per_minute = 20
   # config.schema_cache_ttl = 12.hours
