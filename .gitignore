@@ -1,8 +1,10 @@
 /.bundle/
+/.claude/
 /doc/
 /log/*.log
 /pkg/
 /tmp/
+*.gem
 /test/dummy/db/*.sqlite3
 /test/dummy/db/*.sqlite3-*
 /test/dummy/log/*.log
