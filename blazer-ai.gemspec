@@ -3,8 +3,8 @@ require_relative "lib/blazer/ai/version"
 Gem::Specification.new do |spec|
   spec.name = "blazer-ai"
   spec.version = Blazer::Ai::VERSION
-  spec.authors = ["Kieran Klaassen"]
-  spec.email = ["kieranklaassen@gmail.com"]
+  spec.authors = [ "Kieran Klaassen" ]
+  spec.email = [ "kieranklaassen@gmail.com" ]
   spec.homepage = "https://github.com/kieranklaassen/blazer-ai"
   spec.summary = "AI-powered SQL generation for Blazer"
   spec.description = "A Rails engine that adds AI-powered natural language to SQL generation for the Blazer analytics dashboard. Uses RubyLLM to support multiple AI providers (OpenAI, Anthropic, Gemini, etc.)."

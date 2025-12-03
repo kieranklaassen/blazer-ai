@@ -21,11 +21,11 @@ module Blazer
           if body.include?("id=\"editor\"") || body.include?("id=\"editor-container\"")
             body = inject_ai_script(body)
             headers["Content-Length"] = body.bytesize.to_s
-            response = [body]
+            response = [ body ]
           end
         end
 
-        [status, headers, response]
+        [ status, headers, response ]
       end
 
       private
@@ -51,12 +51,12 @@ module Blazer
         description = query_params["description"].to_s.strip
 
         if name.empty? && description.empty?
-          return json_response({error: "Name or description required"}, 422)
+          return json_response({ error: "Name or description required" }, 422)
         end
 
         # Check if AI is enabled
         unless Blazer::Ai.configuration.enabled?
-          return json_response({error: "AI features are disabled"}, 403)
+          return json_response({ error: "AI features are disabled" }, 403)
         end
 
         # Rate limiting
@@ -65,7 +65,7 @@ module Blazer
         begin
           rate_limiter.check_and_track!(identifier: identifier)
         rescue RateLimiter::RateLimitExceeded => e
-          return json_response({error: e.message, retry_after: e.retry_after}, 429)
+          return json_response({ error: e.message, retry_after: e.retry_after }, 429)
         end
 
         # Find data source
@@ -73,20 +73,20 @@ module Blazer
 
         # Generate SQL
         generator = SqlGenerator.new(
-          params: {name: name, description: description},
+          params: { name: name, description: description },
           data_source: data_source
         )
 
         begin
           sql = generator.call
-          json_response({sql: sql}, 200)
+          json_response({ sql: sql }, 200)
         rescue SqlValidator::ValidationError
-          json_response({error: "Generated SQL failed safety validation"}, 422)
+          json_response({ error: "Generated SQL failed safety validation" }, 422)
         rescue SqlGenerator::GenerationError => e
-          json_response({error: e.message}, 422)
+          json_response({ error: e.message }, 422)
         rescue => e
           Rails.logger.error("[BlazerAI] Generation error: #{e.class}: #{e.message}") if defined?(Rails.logger)
-          json_response({error: "An error occurred while generating SQL"}, 422)
+          json_response({ error: "An error occurred while generating SQL" }, 422)
         end
       end
 
@@ -100,8 +100,8 @@ module Blazer
         body = JSON.generate(data)
         [
           status,
-          {"Content-Type" => "application/json", "Content-Length" => body.bytesize.to_s},
-          [body]
+          { "Content-Type" => "application/json", "Content-Length" => body.bytesize.to_s },
+          [ body ]
         ]
       end
 
